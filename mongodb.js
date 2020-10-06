@@ -74,5 +74,45 @@
         //     console.log(data);
         // })
 
+        //! Update one data in collection
+    //         db.collection('users').updateOne({
+    //             _id: new mongodb.ObjectID('5f717d460094de1ab47ceb2b')
+    //         },{
+    //             //! Provide $set to edit or update any fields
+    //             $set: {
+    //                 name: 'Inzana Khabir',
+    //                 age: 25,
+    //                 jobs: 'Front-end Engineer'
+    //             }
+    //         }).then((result) => { //? THIS IS A PROMISES EITHER RUNNING OR FAILED
+    //             console.log(result);
+    //         }).catch((e) => {
+    //             console.log(e);
+    //         })
+    // 
+        
+        //! Update Many datas in collection
+            // db.collection('task').updateMany({
+            //     completed: true
+            // }, {
+            //     $set: {
+            //         completed: false
+            //     }
+            // }).then((res) => {
+            //     console.log(res);
+            // }).catch((e) => {
+            //     console.log(e);
+            // })
+
+        //! Delete One data in collection
+            // db.collection('users').deleteOne({
+            //     _id: mongodb.ObjectID('5f717d460094de1ab47ceb2b')
+            // }).then((res) => {
+            //     console.log(res);
+            // }).catch((e) => {
+            //     console.log(e);
+            // })
+
+
+
     })
-    
