@@ -15,7 +15,7 @@ const User = mongoose.model('User', {
     },
     age: {
         type: String,
-        validate(value){
+        validate(value){ // TODO: Validate Data Before Saving It
             if (value < 0) throw new Error('Age must be a positive number')
         }
     },
