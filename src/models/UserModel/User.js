@@ -36,7 +36,8 @@ const User = mongoose.model('User', {
         }
     },
     jobs: {
-        type: String
+        type: String,
+        default: "Jobless"
     }
 })
 
