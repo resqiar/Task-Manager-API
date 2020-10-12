@@ -70,15 +70,26 @@ router.get('/task/:id', async (req, res) => {
 
 //! Update Task by Its ID
 router.patch('/task/:id', async (req, res) => {
-   // task id
-   const taskID = req.params.id
+    // allowed to updates
+    const resKey = Object.keys(req.body)
+    const allowedToUpdates = ['Task', 'Completed']
+    const isValidToUpdate = resKey.every((value) => allowedToUpdates.includes(value))
+
+    if (!isValidToUpdate) return res.status(400).send({ error : "Invalid keys to update!"})
+
+    // task id
+    const taskID = req.params.id
 
    try {
-       const task = await Task.findByIdAndUpdate(taskID, req.body, { new: true, runValidators: true})
+       const task = await Task.findById(taskID)
 
        if (!task) return res.status(404).send({
            error: "Could not find any data relevant"
        })
+
+       // what user gonna update?
+       resKey.forEach((value) => task[value] = req.body[value])
+       await task.save()
 
        res.send({
            message: "Success"

@@ -1,4 +1,5 @@
 const express = require('express');
+const { update } = require('../models/UserModel/User');
 const router = express.Router()
 
 //Import Model
@@ -71,13 +72,17 @@ router.patch('/user/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findByIdAndUpdate(userID, req.body, { new: true, runValidators: true})
-
+        const user = await User.findById(userID)
+        
         if (!user) {
             return res.status(404).send({
                 error: "Could not find any data relevant"
             })
         }
+
+        // what user gonna update?
+        resKey.forEach((update) => user[update] = req.body[update])
+        await user.save()
 
         res.status(200).send({
             message: "Success"
