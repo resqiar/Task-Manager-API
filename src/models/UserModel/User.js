@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 /**
  * ! USER SCHEMA !
@@ -40,10 +41,25 @@ const userSchema = new mongoose.Schema({
     jobs: {
         type: String,
         default: "Jobless"
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
-// ! Schema to login with email and Password
+//! Methods to generate tokens
+userSchema.methods.generateAuthTokens = async function () {
+    // generate tokens with JWT
+    const token = jwt.sign({ _id: this._id.toString()}, 'resqiar')
+    // save it to database
+    this.tokens = this.tokens.concat({ token })
+    await this.save()
+}
+
+// ! Methods to login with email and Password
 userSchema.statics.findByCredentials = async (email, password) => {
     //search user by email 
     const user = await User.findOne({email})

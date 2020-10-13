@@ -1,26 +1,32 @@
-const express = require('express');
-const { update } = require('../models/UserModel/User');
+const express = require('express')
 const router = express.Router()
+
 
 //Import Model
 const User = require('../models/UserModel/User')
 
 
  //! Create User
- router.post('/user', (req, res) => {
+ router.post('/user', async (req, res) => {
      // Send Request To User Model
      const user = new User(req.body)
 
-     // Save to mongo
-     user.save().then(() => {
-        res.send({
+     try {
+        // Save to mongo
+        await user.save()
+
+        // Automatically generate tokens for new users
+        const token = user.generateAuthTokens()
+
+        res.status(201).send({
+            user,
             message: "Successfully saved a new account"
         })
-     }).catch((e) => {
-         res.send({
-             message: e.message
-         })
-     })
+     } catch (e) {
+        res.status(400).send({
+            error: e.message
+        })   
+     }
  })
 
  //! Read Users
@@ -120,6 +126,10 @@ router.delete('/user/:id', async (req, res) => {
 router.post('/user/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
+
+        // Automatically generate tokens here
+        const token = user.generateAuthTokens()
+
         res.send(user)
     } catch (e) {
         console.log(e);
