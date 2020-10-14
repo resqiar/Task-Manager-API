@@ -76,6 +76,18 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user
 }
 
+/**
+ * Todo: Override JSON object that send from here, so we can control what data can be exposed publicly
+ */
+userSchema.methods.toJSON = function () {
+    const userObject = this.toObject()
+
+    // delete unnecessary data that will shown up to user
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
 
 /**
  * ! Schema Middleware !
