@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const auth = require('../middleware/auth')
 
 
 //Import Model
@@ -20,6 +21,7 @@ const User = require('../models/UserModel/User')
 
         res.status(201).send({
             user,
+            token,
             message: "Successfully saved a new account"
         })
      } catch (e) {
@@ -29,16 +31,10 @@ const User = require('../models/UserModel/User')
      }
  })
 
- //! Read Users
- router.get('/users', (req, res) => {
-    User.find({}).then((users) => {
-        // send back the data to the client
-        res.send(users)
-    }).catch((e) => {
-        res.status(500).send({
-            message: e.message
-        })
-    })
+ //! Read user's profile
+ router.get('/users/my', auth, async (req, res) => {
+    // req.user is from authentication fetch code
+    res.send(req.user)
 })
 
 //! Read single user by its ID
@@ -128,9 +124,9 @@ router.post('/user/login', async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password)
 
         // Automatically generate tokens here
-        const token = user.generateAuthTokens()
+        const token = await user.generateAuthTokens()
 
-        res.send(user)
+        res.send({user, token})
     } catch (e) {
         console.log(e);
         res.status(400).send({
