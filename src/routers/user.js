@@ -118,7 +118,7 @@ router.delete('/user/:id', async (req, res) => {
     }
 })
 
-// ! Login with user
+// ! Login (
 router.post('/user/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
@@ -135,5 +135,37 @@ router.post('/user/login', async (req, res) => {
     }
 })
 
+// ! Logout
+    router.post('/user/logout', auth, async (req, res) => {
+        try {
+            
+            req.user.tokens = req.user.tokens.filter((value) => { //remove current token from database
+                return value.token !== req.token
+            })
+            await req.user.save()
+
+            res.send({
+                message: "Successfully logout"
+            })
+        } catch (e) {
+            console.log(e);
+            res.status(500).send({
+                error: e.message
+            })
+        }
+    })
+
+// ! Logout of all devices
+    router.post('/user/logoutAll', auth, async (req, res) => {
+        try {
+            // remove all tokens array
+            req.user.tokens = []
+            await req.user.save()
+        
+            res.send({ message: "success logout from all devices"} )
+        } catch (e) {
+            
+        }
+    })
 
 module.exports = router
