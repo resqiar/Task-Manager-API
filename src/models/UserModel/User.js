@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Task = require('../TaskModel/Task')
 
 /**
  * ! USER SCHEMA !
@@ -90,13 +91,23 @@ userSchema.methods.toJSON = function () {
 }
 
 /**
- * ! Schema Middleware !
+ * ! Middleware that hash password before saving it to db
  */
 userSchema.pre('save', async function(next) {
     // Check if password is created and hash it
     if (this.isModified('password')) this.password = await bcryptjs.hash(this.password, 8)
 
     // next
+    next()
+})
+
+/**
+ * ! Middleware that remove all user's task before deleting account
+ */
+userSchema.pre('remove', async function(next) {
+    // Drop all task
+    await Task.deleteMany({ Author: this._id })
+
     next()
 })
 
