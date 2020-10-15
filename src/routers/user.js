@@ -56,10 +56,8 @@ router.get('/user/:id', (req, res) => {
    })
 })
 
-//! Update User By its ID
-router.patch('/user/:id', async (req, res) => {
-    // user ID 
-    const userID = req.params.id
+//! Update User 
+router.patch('/user/my', auth, async (req, res) => {
 
     //! Check if respond keys is valid
     const resKey = Object.keys(req.body)
@@ -74,14 +72,8 @@ router.patch('/user/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findById(userID)
+        const user = req.user
         
-        if (!user) {
-            return res.status(404).send({
-                error: "Could not find any data relevant"
-            })
-        }
-
         // what user gonna update?
         resKey.forEach((update) => user[update] = req.body[update])
         await user.save()
@@ -96,20 +88,14 @@ router.patch('/user/:id', async (req, res) => {
     }
 })
 
-//! Delete User by ID
-router.delete('/user/:id', async (req, res) => {
-    //user ID
-    const userID = req.params.id
-
+//! Delete User 
+router.delete('/user/my', auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(userID)
+        // delete all the user's account
+        await req.user.remove()
 
-        if (!user) return res.status(404).send({
-            error: "Could not find any data relevant"
-        })
-        
         res.send({
-            message: "Success"
+            message: "Success deleting your account"
         })
     } catch (e) {
         res.status(500).send({
