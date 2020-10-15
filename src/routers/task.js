@@ -28,17 +28,17 @@ router.post('/task', auth, async (req, res) => {
 
 
 //! Read Tasks
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', auth, async (req, res) => {
    
    try {
-       const tasks = await Task.find({})
+       const tasks = await Task.find({ Author: req.user._id })
 
        // send to user
        if (!tasks) {
            return res.status(404).send()
        }
 
-       res.status(200).send(tasks)
+       res.send(tasks)
    } catch (e) {
        res.status(500).send({
            message: e.message
@@ -47,17 +47,15 @@ router.get('/tasks', async (req, res) => {
 })
 
 //! Read Task by its ID
-router.get('/task/:id', async (req, res) => {
+router.get('/task/:id', auth, async (req, res) => {
    //task ID
    const taskID = req.params.id
-
+    
    try {
-       const task = await Task.findById(taskID)
-
+       const task = await Task.findOne({ _id: taskID, Author: req.user._id })
+        
        if (!task) {
-           return res.status(404).send({
-               message: "Could not find any data relevant"
-           })
+           return res.status(404).send()
        }
 
        //! Send Back !
@@ -73,7 +71,7 @@ router.get('/task/:id', async (req, res) => {
 
 
 //! Update Task by Its ID
-router.patch('/task/:id', async (req, res) => {
+router.patch('/task/:id', auth, async (req, res) => {
     // allowed to updates
     const resKey = Object.keys(req.body)
     const allowedToUpdates = ['Task', 'Completed']
@@ -85,11 +83,9 @@ router.patch('/task/:id', async (req, res) => {
     const taskID = req.params.id
 
    try {
-       const task = await Task.findById(taskID)
+       const task = await Task.findOne({ _id: taskID, Author: req.user._id })
 
-       if (!task) return res.status(404).send({
-           error: "Could not find any data relevant"
-       })
+       if (!task) return res.status(404).send()
 
        // what user gonna update?
        resKey.forEach((value) => task[value] = req.body[value])
@@ -108,16 +104,14 @@ router.patch('/task/:id', async (req, res) => {
 
 
 //! Delete Task by ID
-router.delete('/task/:id', async (req, res) => {
+router.delete('/task/:id', auth, async (req, res) => {
    //user ID
    const taskID = req.params.id
 
    try {
-       const task = await Task.findByIdAndDelete(taskID)
+       const task = await Task.findOneAndDelete({ _id: taskID, Author: req.user._id })
 
-       if (!task) return res.status(404).send({
-           error: "Could not find any data relevant"
-       })
+       if (!task) return res.status(404).send()
        
        res.send({
            message: "Success"
