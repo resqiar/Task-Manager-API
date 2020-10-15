@@ -1,24 +1,28 @@
 const express = require('express');
 const router = express.Router()
-
+const auth = require('../middleware/auth')
 //import model
 const Task = require('../models/TaskModel/Task')
 
 //! Create Task
-router.post('/task', (req, res) => {
-    //send request to Task Model
-    const task = new Task(req.body)
+router.post('/task', auth, async (req, res) => {
+    try {
+    //create the task
+    const task = await Task.create({
+        ...req.body,
+        Author: req.user._id
+    })
 
     //save it to mongo
-    task.save().then(() => {
-        res.send({
-            message: "Succesfully saved your task"
+    await task.save()
+
+    res.send({ message: "Succesfully saved your task" })
+    
+    } catch (e) {
+        res.status(500).send({
+            error: e.message
         })
-    }).catch((e) => {
-        res.status(400).send({
-            message: e.message
-        })
-    })
+    }
 })
 
 
