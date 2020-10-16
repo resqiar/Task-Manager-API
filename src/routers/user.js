@@ -163,7 +163,7 @@ router.post('/user/login', async (req, res) => {
         },
         fileFilter(req, file, callback){
             // check if uploaded is image or not - if not then
-            if (!file.originalname.match(/\.(img|png|jpeg)$/)) callback(new Error('Invalid Format'))
+            if (!file.originalname.match(/\.(img|png|jpeg|jpg)$/)) callback(new Error('Invalid Format'))
 
             // if yes then save it
             callback(undefined, true)
