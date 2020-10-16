@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const auth = require('../middleware/auth')
+const multer = require('multer');
 
 
 //Import Model
@@ -153,5 +154,15 @@ router.post('/user/login', async (req, res) => {
             
         }
     })
+
+//! Upload Avatar
+    const upload = multer({ // upload configuration
+        dest: 'avatars'
+    })
+
+    router.post('/user/my/avatar', upload.single('avatar'), async (req, res) => {
+        res.status(201).send()        
+    })
+
 
 module.exports = router
