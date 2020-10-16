@@ -156,11 +156,21 @@ router.post('/user/login', async (req, res) => {
     })
 
 //! Upload Avatar
-    const upload = multer({ // upload configuration
-        dest: 'avatars'
+    const uploadAvatar = multer({ // upload configuration
+        dest: 'avatars',
+        limits: {
+            fileSize: 10485760
+        },
+        fileFilter(req, file, callback){
+            // check if uploaded is image or not - if not then
+            if (!file.originalname.match(/\.(img|png|jpeg)$/)) callback(new Error('Invalid Format'))
+
+            // if yes then save it
+            callback(undefined, true)
+        }
     })
 
-    router.post('/user/my/avatar', upload.single('avatar'), async (req, res) => {
+    router.post('/user/my/avatar', uploadAvatar.single('avatar'), async (req, res) => {
         res.status(201).send()        
     })
 
