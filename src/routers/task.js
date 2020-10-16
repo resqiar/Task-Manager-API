@@ -16,7 +16,7 @@ router.post('/task', auth, async (req, res) => {
     //save it to mongo
     await task.save()
 
-    res.send({ message: "Succesfully saved your task" })
+    res.status(201).send(task)
     
     } catch (e) {
         res.status(500).send({
@@ -28,17 +28,32 @@ router.post('/task', auth, async (req, res) => {
 
 
 //! Read Tasks
+/**
+ * Todo: Make a query so user can provides additional properties
+ * ? /tasks/completed=true
+ * ? /tasks/limit=10
+ * ? /tasks/skip=2
+ */
+
 router.get('/tasks', auth, async (req, res) => {
-   
+    // make a placeholder
+   const query = {}
+
+   // convert parameter to boolean
+   if (req.query.completed) query.Completed = req.query.completed === 'true'
+
    try {
-       const tasks = await Task.find({ Author: req.user._id })
+       // populate data with query's criteria
+       await req.user.populate('tasks').execPopulate({
+           path: 'tasks',
+           match: query, // match what query provides here
+           options: { // provides data limit and skip that user provided
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+           }
+       })
 
-       // send to user
-       if (!tasks) {
-           return res.status(404).send()
-       }
-
-       res.send(tasks)
+       res.send(req.user.tasks)
    } catch (e) {
        res.status(500).send({
            message: e.message

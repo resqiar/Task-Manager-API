@@ -49,6 +49,15 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+}, {
+    timestamps: true
+})
+
+// TODO: Make a virtual relation data with Task
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'Author'
 })
 
 //! Methods to generate tokens
