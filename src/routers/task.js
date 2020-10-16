@@ -30,27 +30,38 @@ router.post('/task', auth, async (req, res) => {
 //! Read Tasks
 /**
  * Todo: Make a query so user can provides additional properties
- * ? /tasks/completed=true
- * ? /tasks/limit=10
- * ? /tasks/skip=2
+ * ? GET /tasks/completed=true
+ * ? GET /tasks/limit=10
+ * ? GET /tasks/skip=2
+ * ? GET /tasks?sortBy=createdAt:asc
  */
 
 router.get('/tasks', auth, async (req, res) => {
     // make a placeholder
-   const query = {}
+    const match = {}
+    const sort = {}
 
-   // convert parameter to boolean
-   if (req.query.completed) query.Completed = req.query.completed === 'true'
+    // convert parameter to boolean
+    if (req.query.completed) match.Completed = req.query.completed === 'true'
+
+    // if sort exist then
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+
+        // bind to sort {}
+        sort[parts[0]] = parts[1] === 'asc' ? 1 : -1 // if ascending set to 1 if descending set to -1
+    }
 
    try {
        // populate data with query's criteria
        await req.user.populate('tasks').execPopulate({
            path: 'tasks',
-           match: query, // match what query provides here
+           match, // match what query provides here
            options: { // provides data limit and skip that user provided
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
-           }
+                skip: parseInt(req.query.skip),
+                sort
+            }
        })
 
        res.send(req.user.tasks)
