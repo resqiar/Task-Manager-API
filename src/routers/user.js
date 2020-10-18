@@ -163,7 +163,7 @@ router.post('/user/login', async (req, res) => {
         },
         fileFilter(req, file, callback){
             // check if uploaded is image or not - if not then
-            if (!file.originalname.match(/\.(img|png|jpeg|jpg)$/)) callback(new Error('Invalid Format'))
+            if (!file.originalname.match(/\.(img|png|jpeg|jpg)$/)) return callback(new Error('Invalid Format files uploaded'))
 
             // if yes then save it
             callback(undefined, true)
@@ -172,6 +172,8 @@ router.post('/user/login', async (req, res) => {
 
     router.post('/user/my/avatar', uploadAvatar.single('avatar'), async (req, res) => {
         res.status(201).send()        
+    }, (error, req, res, next) => { //! <- CALLBACK TO HANDLE ERROR !
+        res.status(400).send({ error: error.message })
     })
 
 
