@@ -157,9 +157,8 @@ router.post('/user/login', async (req, res) => {
 
 //! Upload Avatar
     const uploadAvatar = multer({ // upload configuration
-        dest: 'avatars',
         limits: {
-            fileSize: 10485760
+            fileSize: 2048576 // max 2mb
         },
         fileFilter(req, file, callback){
             // check if uploaded is image or not - if not then
@@ -170,8 +169,14 @@ router.post('/user/login', async (req, res) => {
         }
     })
 
-    router.post('/user/my/avatar', uploadAvatar.single('avatar'), async (req, res) => {
-        res.status(201).send()        
+    router.post('/user/my/avatar', auth, uploadAvatar.single('avatar'), async (req, res) => {
+        // send binary data to avatar field
+        req.user.avatar = req.file.buffer
+
+        // save it
+        await req.user.save()
+
+        res.send()        
     }, (error, req, res, next) => { //! <- CALLBACK TO HANDLE ERROR !
         res.status(400).send({ error: error.message })
     })
