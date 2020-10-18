@@ -156,6 +156,10 @@ router.post('/user/login', async (req, res) => {
     })
 
 //! Upload Avatar
+
+    /**
+     * TODO: MULTER CONFIGURATIONS
+     */
     const uploadAvatar = multer({ // upload configuration
         limits: {
             fileSize: 2048576 // max 2mb
@@ -180,6 +184,22 @@ router.post('/user/login', async (req, res) => {
     }, (error, req, res, next) => { //! <- CALLBACK TO HANDLE ERROR !
         res.status(400).send({ error: error.message })
     })
+
+//! Delete Avatar Routes
+router.delete('/user/my/avatar', auth, async (req, res) => {
+    try {
+        // if avatar is unavailable
+        if (!req.user.avatar) return res.status(400).send({ error: "You dont have avatar yet"})
+        
+        // set to undefined
+        req.user.avatar = undefined 
+        await req.user.save()
+
+        res.send()
+    } catch (e) {
+        res.status(500).send({ error: e.message })
+    }
+})
 
 
 module.exports = router
