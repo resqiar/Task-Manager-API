@@ -98,6 +98,7 @@ userSchema.methods.toJSON = function () {
     // delete unnecessary data that will shown up to user
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar
 
     return userObject
 }
