@@ -201,5 +201,20 @@ router.delete('/user/my/avatar', auth, async (req, res) => {
     }
 })
 
+//! GET Avatar by user ID
+router.get('/user/:id/avatar', async (req, res) => {
+    try {
+        const userID = req.params.id
+        const user = await User.findById(userID)
+
+        // check if user OR the avatar is exist
+        if (!user || !user.avatar) throw new Error()
+
+        res.set('Content-Type', 'image/jpg')
+        res.send(user.avatar)
+    } catch (e) {
+        res.status(404).send()
+    }
+})
 
 module.exports = router
