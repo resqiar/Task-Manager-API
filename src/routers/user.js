@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const auth = require('../middleware/auth')
 const multer = require('multer');
+const sharp = require('sharp');
 
 
 //Import Model
@@ -174,8 +175,11 @@ router.post('/user/login', async (req, res) => {
     })
 
     router.post('/user/my/avatar', auth, uploadAvatar.single('avatar'), async (req, res) => {
-        // send binary data to avatar field
-        req.user.avatar = req.file.buffer
+        // send binary data to sharp module - convert to 250x250, png format
+        const convertedImg = await sharp(req.file.buffer).resize({ height:250, width:250 }).png().toBuffer()
+
+        // save it to avatar field
+        req.user.avatar = convertedImg
 
         // save it
         await req.user.save()
