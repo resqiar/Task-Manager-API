@@ -66,7 +66,7 @@ userSchema.virtual('tasks', {
 //! Methods to generate tokens
 userSchema.methods.generateAuthTokens = async function () {
     // generate tokens with JWT
-    const token = jwt.sign({ _id: this._id.toString()}, 'resqiar')
+    const token = jwt.sign({ _id: this._id.toString()}, process.env.JWT_TOKEN)
     // save it to database
     this.tokens = this.tokens.concat({ token })
     await this.save()

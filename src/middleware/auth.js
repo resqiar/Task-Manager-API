@@ -5,7 +5,7 @@ const auth = async (req, res, next) => {
     try {
         //authentication code on header
         const authCode = req.header('Authorization').replace('Bearer ', '')
-        const decoded = jwt.verify(authCode, 'resqiar')
+        const decoded = jwt.verify(authCode, process.env.JWT_TOKEN)
 
         //find user with auth _id and its code
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': authCode })
