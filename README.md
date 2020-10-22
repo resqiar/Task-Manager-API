@@ -14,7 +14,7 @@ rename 'sample-dev.env' to 'dev.env' and simply enter the value of your MongoDB 
 
 # API Routes
 Routes has two relationship collections that provide **User** routes and **Task** routes. 
-**Remember to include user's token in request header, otherwise it would be unaouthorized request. required authorization route marked as (*)**
+**Remember to include user's token in request header, otherwise it would be unauthorized request. required authorization route marked as (*)**
 
 #### Create User
 ```
