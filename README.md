@@ -62,7 +62,28 @@ Routes has two relationship collections that provide **User** routes and **Task*
  GET /user/{ID}/avatar
  ```
  
- #### Delete Avatar *
+ #### Create Task *
 ```
- Delete /user/my/avatar
+ POST /task
+ ```
+ 
+  #### Read Task *
+```
+ Delete /tasks
+ ```
+ **Additional parameters to filter tasks**
+ * sortBy=
+ * limits=
+ * skip=
+ 
+ *if none of these parameters were added, API will return all user's tasks*
+ 
+  #### Update Task by its ID *
+```
+ PATCH /task/{task id}
+ ```
+ 
+  #### Delete Task by its ID *
+```
+ Delete /task/{task id}
  ```
