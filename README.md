@@ -2,7 +2,7 @@
 Just a simple Javascript back-end service that let you build a 'task manager' CRUD applications run on MongoDB easier with Read and Write API. It maintains your task with authentication so every single user has privacy on their tasks.
 
 ### Base URL
-```js
+```
 https://resqiar-task-manager-api.herokuapp.com/
 ```
 ### Local Installation
@@ -13,3 +13,56 @@ rename 'sample-dev.env' to 'dev.env' and simply enter the value of your MongoDB 
 ##### 4. Run `npm run dev`
 
 # API Routes
+Routes has two relationship collections that provide **User** routes and **Task** routes. 
+*Remember to include user's token in request header, otherwise it would be unaouthorized request. required authorization route would be mark as (*)
+
+#### Create User
+```
+ POST /user
+ ```
+ 
+ #### Read User Profile *
+ 
+```
+ GET /user/my
+ ```
+ 
+ #### Update User Data *
+```
+ PATCH /user/my
+ ```
+ 
+ #### Delete User *
+```
+ DELETE /user/my
+ ```
+ 
+ #### Login with email and password
+```
+ POST /user/login
+ ```
+ 
+ #### Logout *
+```
+ POST /user/logout
+ ```
+ 
+ #### Logout from all devices *
+```
+ POST /user/logoutAll
+ ```
+ 
+ #### Upload user avatar *
+```
+ POST /user/my/avatar
+ ```
+ 
+ #### Inspect User Avatar by their ID 
+```
+ GET /user/{ID}/avatar
+ ```
+ 
+ #### Delete Avatar *
+```
+ Delete /user/my/avatar
+ ```
